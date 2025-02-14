@@ -823,7 +823,7 @@ def filter_outliers(target_dir, base_path):
             print(f"Outlier Value: {value}, File: {key}")
     
     # Save the list of outliers to a file
-    with open(f"{target_dir}/outliers.txt", "w") as file:
+    with open("outliers.txt", "w") as file:
         for fname in set(all_outliers):
             file.write(f"{fname}\n")
     print(f"Outliers saved to 'outliers.txt'.")
@@ -1073,7 +1073,6 @@ def compare_measurements(target_dir):
     # save plt
     plt.savefig(f'{target_dir}/ours_vs_manual.png')
     # plt.show()
-    plt.close()
 
 def main(las_file_path, corner_points, target_dir):
 
@@ -1088,9 +1087,9 @@ def main(las_file_path, corner_points, target_dir):
 
 
     in_file = laspy.read(las_file_path)
-    temp_infile = laspy.read(las_file_path.replace('original', 'modified'))
+    temp_infile = laspy.read(las_file_path.replace('all_pointcloud', 'data/pointclouds'))
     points = np.vstack((in_file.x, in_file.y, in_file.z)).transpose()
-    offsetsNscales = np.load(f"pointclouds/OffsetsScales/{'_'.join(las_file_name.split('_')[:-1])}.npy")
+    offsetsNscales = np.load(f"OffsetsScales/{'_'.join(las_file_name.split('_')[:-1])}.npy")
     offsetsOld, scalesOld = offsetsNscales[:3], offsetsNscales[3:]
     # points = ((points - in_file.header.offsets) / in_file.header.scales) * scalesOld + offsetsOld
     classification = in_file.classification
@@ -2277,8 +2276,7 @@ def main(las_file_path, corner_points, target_dir):
 if __name__ == '__main__':
     base_path = 'pointclouds/original'
     temp_path = 'pointclouds/modified'
-    target_folder = input('Enter target directory name: ')
-    target_dir = f'output/{target_folder}'
+    target_dir = 'output'
     corners_json = 'ramp_corners.json'
 
     analyze_corners(temp_path, corners_json, target_dir)
